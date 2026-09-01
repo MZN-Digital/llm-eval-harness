@@ -120,30 +120,32 @@ npm run eval              # the 20 cases against the live model
 npm run eval:ci           # same, exits non-zero if thresholds are missed
 ```
 
-Output (the current run, unedited):
+Output — the current run on `main`, unedited:
 
 ```
-PASS  plain-01      100%
-FAIL  multi-01       90%
-      missed_field.assignee: expected "Priya", got null
-FAIL  split-01       80%
-      wrong_value.title: expected "Prepare the report",
-                         got "Prepare the report, including the charts"
+PASS  plain-01     100%
+FAIL  plain-02      80%
+      wrong_value.due: expected "2026-09-04", got "2026-09-05"
+PASS  plain-03     100%
 ...
+PASS  trap-03      100%
+FAIL  noise-01      90%
+      wrong_value.due: expected "2026-09-02", got "2026-09-03"
+
 ────────────────────────────────────────────────────
-Passed          12/20  (60%)
-Field accuracy  83.0%
+Passed          17/20  (85%)
+Field accuracy  97.5%
 
 Failures by class
-  wrong_value          5
-  missed_field         4
-  malformed            2
+  wrong_value          3
 
 Pass rate by case class
-  distractor           3/3
+  straightforward      2/3
   no_task              3/3
-  must_be_null         2/4
-  multiple             0/2
+  must_be_null         4/4
+  multiple             2/2
+  distractor           3/3
+  relative_date        2/3
 ```
 
 That last block is the reason to build this. A pass rate says something broke.
