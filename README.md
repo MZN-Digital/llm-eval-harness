@@ -120,7 +120,7 @@ npm run eval              # the 20 cases against the live model
 npm run eval:ci           # same, exits non-zero if thresholds are missed
 ```
 
-Output:
+Output (the current run, unedited):
 
 ```
 PASS  plain-01      100%
@@ -199,6 +199,41 @@ The distinction between (1), (2) and (3) is the whole argument for building
 this: a single accuracy number would have shown 60% and pointed at the model,
 when a third of the gap was in the harness and a third was a fixable prompt
 rule.
+
+### After those fixes
+
+```
+Passed          17/20  (85%)
+Field accuracy  97.5%
+
+Failures by class
+  wrong_value          3
+  hallucinated_field   0
+  missed_field         0
+  malformed            0
+```
+
+The three remaining failures are one defect, found three times:
+
+```
+"by Friday"           expected 2026-09-04, got 2026-09-05
+"end of this week"    expected 2026-09-04, got 2026-09-05
+"wed morning"         expected 2026-09-02, got 2026-09-03
+```
+
+The reference date is Tuesday 1 September 2026. Friday is the 4th and Wednesday
+is the 2nd. The model is one day late, consistently, on every weekday name.
+
+That consistency is what makes it worth reporting. A scattered set of date
+errors would suggest the model is weak at arithmetic; three errors all off by
+exactly one day in the same direction is a systematic off-by-one in how the
+model counts forward from a reference date — reproducible, and therefore
+fixable, most likely by giving it the weekday of the reference date rather than
+only the date.
+
+It is left unfixed here on purpose. The gate is green at 85% with zero
+hallucinations, and this is what a real backlog item looks like: a defect that
+is named, bounded, reproducible on demand, and waiting rather than hidden.
 
 ## Layout
 
