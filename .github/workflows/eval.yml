@@ -1,0 +1,46 @@
+name: eval
+
+# Runs on every push and pull request. The eval calls the real API, so it costs
+# a few cents per run — worth it, because a prompt change that passes the unit
+# tests and quietly degrades extraction quality is exactly the regression this
+# repository exists to catch.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  eval:
+    name: eval suite
+    runs-on: ubuntu-latest
+    # Skipped on forks, where the secret is not available. A skipped job is
+    # honest; a job that passes because it never ran is not.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: npm run eval:ci
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results
+          path: eval/results/latest.json

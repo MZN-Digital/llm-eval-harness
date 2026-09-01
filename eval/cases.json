@@ -1,0 +1,126 @@
+{
+  "referenceDate": "2026-09-01",
+  "note": "Reference date is a Tuesday. Fixed so relative-date cases stay stable across runs.",
+  "cases": [
+    {
+      "id": "plain-01",
+      "class": "straightforward",
+      "input": "Call Ayşe tomorrow at 3pm about the budget.",
+      "expect": { "tasks": [{ "title": "Call Ayşe about the budget", "assignee": "Ayşe", "due": "2026-09-02", "time": "15:00", "priority": null }] }
+    },
+    {
+      "id": "plain-02",
+      "class": "straightforward",
+      "input": "Send the invoice to Mark by Friday. Urgent.",
+      "expect": { "tasks": [{ "title": "Send the invoice to Mark", "assignee": "Mark", "due": "2026-09-04", "time": null, "priority": "high" }] }
+    },
+    {
+      "id": "plain-03",
+      "class": "straightforward",
+      "input": "Book the meeting room for the standup on 15 September at 09:30.",
+      "expect": { "tasks": [{ "title": "Book the meeting room for the standup", "assignee": null, "due": "2026-09-15", "time": "09:30", "priority": null }] }
+    },
+    {
+      "id": "empty-01",
+      "class": "no_task",
+      "input": "Thanks for the update, looks good.",
+      "expect": { "tasks": [] }
+    },
+    {
+      "id": "empty-02",
+      "class": "no_task",
+      "input": "The Q3 numbers came in higher than we forecast, mostly from the retail channel.",
+      "expect": { "tasks": [] }
+    },
+    {
+      "id": "empty-03",
+      "class": "no_task",
+      "input": "I had a dentist appointment yesterday so I missed the call.",
+      "expect": { "tasks": [] }
+    },
+    {
+      "id": "null-01",
+      "class": "must_be_null",
+      "input": "Someone should look at the onboarding flow at some point.",
+      "expect": { "tasks": [{ "title": "Look at the onboarding flow", "assignee": null, "due": null, "time": null, "priority": null }] }
+    },
+    {
+      "id": "null-02",
+      "class": "must_be_null",
+      "input": "Fix the login bug.",
+      "expect": { "tasks": [{ "title": "Fix the login bug", "assignee": null, "due": null, "time": null, "priority": null }] }
+    },
+    {
+      "id": "null-03",
+      "class": "must_be_null",
+      "input": "We need to update the pricing page before the campaign goes out.",
+      "expect": { "tasks": [{ "title": "Update the pricing page", "assignee": null, "due": null, "time": null, "priority": null }] }
+    },
+    {
+      "id": "null-04",
+      "class": "must_be_null",
+      "input": "Ask legal about the contract when you get a chance.",
+      "expect": { "tasks": [{ "title": "Ask legal about the contract", "assignee": null, "due": null, "time": null, "priority": "low" }] }
+    },
+    {
+      "id": "multi-01",
+      "class": "multiple",
+      "input": "Send the deck to Priya today, then book the venue for the 20th.",
+      "expect": { "tasks": [{ "title": "Send the deck to Priya", "assignee": "Priya", "due": "2026-09-01", "time": null, "priority": null }, { "title": "Book the venue", "assignee": null, "due": "2026-09-20", "time": null, "priority": null }] }
+    },
+    {
+      "id": "multi-02",
+      "class": "multiple",
+      "input": "Three things before Thursday: renew the domain, pay the hosting invoice, and email the accountant.",
+      "expect": { "tasks": [{ "title": "Renew the domain", "assignee": null, "due": "2026-09-03", "time": null, "priority": null }, { "title": "Pay the hosting invoice", "assignee": null, "due": "2026-09-03", "time": null, "priority": null }, { "title": "Email the accountant", "assignee": null, "due": "2026-09-03", "time": null, "priority": null }]  }
+    },
+    {
+      "id": "split-01",
+      "class": "over_splitting",
+      "input": "Prepare the report, including the charts and the summary section.",
+      "expect": { "tasks": [{ "title": "Prepare the report", "assignee": null, "due": null, "time": null, "priority": null }] }
+    },
+    {
+      "id": "date-01",
+      "class": "relative_date",
+      "input": "Follow up next Monday.",
+      "expect": { "tasks": [{ "title": "Follow up", "assignee": null, "due": "2026-09-07", "time": null, "priority": null }] }
+    },
+    {
+      "id": "date-02",
+      "class": "relative_date",
+      "input": "Ship it end of this week.",
+      "expect": { "tasks": [{ "title": "Ship it", "assignee": null, "due": "2026-09-04", "time": null, "priority": null }] }
+    },
+    {
+      "id": "date-03",
+      "class": "relative_date",
+      "input": "Let's revisit this in two weeks.",
+      "expect": { "tasks": [{ "title": "Revisit this", "assignee": null, "due": "2026-09-15", "time": null, "priority": null }] }
+    },
+    {
+      "id": "trap-01",
+      "class": "distractor",
+      "input": "Yesterday I finally sent the contract to Ali. Nothing else outstanding.",
+      "expect": { "tasks": [] }
+    },
+    {
+      "id": "trap-02",
+      "class": "distractor",
+      "input": "If the client signs, we'll need to onboard them next week — but they haven't signed yet.",
+      "expect": { "tasks": [] }
+    },
+    {
+      "id": "trap-03",
+      "class": "distractor",
+      "input": "Don't send the newsletter today, it's going out Thursday instead.",
+      "expect": { "tasks": [{ "title": "Send the newsletter", "assignee": null, "due": "2026-09-03", "time": null, "priority": null }] }
+    },
+    {
+      "id": "noise-01",
+      "class": "messy_input",
+      "input": "ok so — call the bank re: the transfer (the one from last mnth), maybe wed?? also chase Tom",
+      "expect": { "tasks": [{ "title": "Call the bank about the transfer", "assignee": null, "due": "2026-09-02", "time": null, "priority": null }, { "title": "Chase Tom", "assignee": "Tom", "due": null, "time": null, "priority": null }] }
+    }
+  ]
+}
