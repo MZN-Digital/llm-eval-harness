@@ -124,24 +124,81 @@ Output:
 
 ```
 PASS  plain-01      100%
-FAIL  null-02        80%
-      hallucinated_field.due: expected null, got "2026-09-01"
+FAIL  multi-01       90%
+      missed_field.assignee: expected "Priya", got null
+FAIL  split-01       80%
+      wrong_value.title: expected "Prepare the report",
+                         got "Prepare the report, including the charts"
 ...
 ────────────────────────────────────────────────────
-Passed          17/20  (85%)
-Field accuracy  94.0%
+Passed          12/20  (60%)
+Field accuracy  83.0%
 
 Failures by class
-  hallucinated_field   2
-  wrong_value          1
+  wrong_value          5
+  missed_field         4
+  malformed            2
 
 Pass rate by case class
-  must_be_null         3/4
-  distractor           2/3
+  distractor           3/3
+  no_task              3/3
+  must_be_null         2/4
+  multiple             0/2
 ```
 
 That last block is the reason to build this. A pass rate says something broke.
 The taxonomy says what kind of thing broke, and therefore what to change.
+
+## What the first run actually found
+
+Kept here rather than tidied away, because the point of the harness is what it
+catches — and the first run caught three things, only one of which was the
+model.
+
+```
+Passed          12/20  (60%)
+Field accuracy  83.0%
+
+Failures by class
+  wrong_value          5
+  missed_field         4
+  malformed            2
+  hallucinated_field   0
+```
+
+**Zero hallucinations, and every distractor passed (3/3).** The model did not
+invent a date, an owner, or a priority anywhere in twenty cases, and it was not
+fooled by "yesterday I finally sent the contract", by a conditional that had
+not happened, or by a negation. That is the failure this repository was built
+to detect, and it did not occur.
+
+What did occur:
+
+**1. Two `malformed` results that reported nothing useful.** The line read
+`expected undefined, got undefined` — true, and useless. A malformed response
+has no fields to compare, so the generic failure printer had nothing to say.
+The cause turned out to be `max_tokens: 1024` truncating a three-task response
+mid-JSON, which surfaced as a parse error and looked like a model defect. Two
+fixes: the runner now prints the failure reason and the raw text, and the limit
+was raised. **This was a harness bug, not a model one** — and the harness only
+found it because a case existed that was long enough to hit it.
+
+**2. Four `missed_field` on names that were plainly in the text.** "Send the
+deck to Priya" came back with `assignee: null`. The cause was the prompt's own
+rule 1 — *do not infer, do not guess* — working too well: the model treated
+reading a name as inference. Fixed by naming the case explicitly rather than by
+loosening the rule, since loosening it is how you trade a missed field for a
+hallucinated one.
+
+**3. One eval case that was wrong.** `"maybe wed??"` expected a firm date. A
+model returning null for a hedged date is arguably more correct than one that
+commits, so the case was testing the harness author's preference rather than
+the model's behaviour. Rewritten.
+
+The distinction between (1), (2) and (3) is the whole argument for building
+this: a single accuracy number would have shown 60% and pointed at the model,
+when a third of the gap was in the harness and a third was a fixable prompt
+rule.
 
 ## Layout
 

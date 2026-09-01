@@ -37,7 +37,15 @@ Rules:
    and often correct answer.
 5. Split into separate tasks only where the text describes separate actions.
    One action with several details is one task.
-6. Keep names exactly as written. Do not expand, correct, or normalise them.`;
+6. Keep names exactly as written. Do not expand, correct, or normalise them.
+
+7. A person named in the action is the assignee. "Send the deck to Priya"
+   has assignee "Priya"; "chase Tom" has assignee "Tom". This is reading
+   what the text says, not inferring - rule 1 does not apply.
+
+8. The title is the action, not the whole sentence. Drop qualifying detail
+   that describes the action rather than naming it: "Prepare the report,
+   including the charts and the summary" has the title "Prepare the report".`;
 
 export type ExtractResult =
   | { ok: true; data: Extraction; raw: string }
@@ -56,7 +64,11 @@ export async function extract(text: string, opts: ExtractOptions): Promise<Extra
   try {
     const response = await client.messages.create({
       model: MODEL,
-      max_tokens: 1024,
+      // 1024 truncated a three-task response during the first run, which
+      // surfaced as a JSON parse error rather than as a length problem. Raised
+      // with room to spare: a truncated response is the most expensive kind of
+      // failure to diagnose, because it looks like a model defect.
+      max_tokens: 2048,
       system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
       messages: [
         {

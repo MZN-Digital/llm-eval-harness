@@ -119,7 +119,7 @@
     {
       "id": "noise-01",
       "class": "messy_input",
-      "input": "ok so — call the bank re: the transfer (the one from last mnth), maybe wed?? also chase Tom",
+      "input": "ok so — call the bank re: the transfer (the one from last mnth), wed morning. also chase Tom",
       "expect": { "tasks": [{ "title": "Call the bank about the transfer", "assignee": null, "due": "2026-09-02", "time": null, "priority": null }, { "title": "Chase Tom", "assignee": "Tom", "due": null, "time": null, "priority": null }] }
     }
   ]

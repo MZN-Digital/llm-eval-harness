@@ -50,9 +50,18 @@ async function main() {
     console.log(`${mark}  ${c.id.padEnd(12)} ${(score.fieldAccuracy * 100).toFixed(0).padStart(3)}%`);
 
     if (!score.passed) {
-      for (const f of score.failures) {
-        const where = f.field ? `.${f.field}` : "";
-        console.log(`      ${f.class}${where}: expected ${JSON.stringify(f.expected)}, got ${JSON.stringify(f.got)}`);
+      // A malformed response has no fields to compare, so the generic line
+      // below would print "expected undefined, got undefined" - true, useless,
+      // and exactly the kind of unactionable output this harness exists to
+      // avoid. The reason and the raw text are what make it diagnosable.
+      if (!result.ok) {
+        console.log(`      malformed (${result.reason}): ${result.error.slice(0, 160)}`);
+        console.log(`      raw: ${JSON.stringify(result.raw.slice(0, 200))}`);
+      } else {
+        for (const f of score.failures) {
+          const where = f.field ? `.${f.field}` : "";
+          console.log(`      ${f.class}${where}: expected ${JSON.stringify(f.expected)}, got ${JSON.stringify(f.got)}`);
+        }
       }
     }
   }
